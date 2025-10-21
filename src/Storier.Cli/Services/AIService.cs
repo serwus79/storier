@@ -6,7 +6,6 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Storier.Cli.Models;
 using System.IO;
-using System.Linq;
 
 public class AIService
 {
@@ -34,8 +33,11 @@ public class AIService
 
         string systemPromptBase = LoadSystemPrompt();
         string memory = LoadMemoryFromFiles();
+        string world = LoadWorld();
+        string characters = LoadCharacters();
+        string missions = LoadMissionsFromFiles();
 
-        string systemPrompt = $"{systemPromptBase}\n\n### Pamięć\n{memory}\n\n### Świat\n{settings.World}\n\n### Postacie\n{settings.Characters}";
+        string systemPrompt = $"{systemPromptBase}\n\n### Pamięć\n{memory}\n\n### Świat\n{world}\n\n### Postacie\n{characters}\n\n### Misje\n{missions}";
 
         _history.AddSystemMessage(systemPrompt);
     }
@@ -56,7 +58,7 @@ public class AIService
     {
         try
         {
-            var files = Directory.GetFiles("Memory", "*.md").Where(f => !Path.GetFileName(f).Equals("system-prompt.md", StringComparison.OrdinalIgnoreCase));
+            var files = Directory.GetFiles(Path.Combine("Memory", "missions"), "*.md");
             var memoryBuilder = new System.Text.StringBuilder();
             foreach (var file in files)
             {
@@ -69,6 +71,66 @@ public class AIService
         catch
         {
             return "Brak dostępnej pamięci narracyjnej.";
+        }
+    }
+
+    private string LoadMissionsFromFiles()
+    {
+        try
+        {
+            var files = Directory.GetFiles(Path.Combine("Memory", "missions"), "*.md");
+            var builder = new System.Text.StringBuilder();
+            foreach (var file in files)
+            {
+                builder.AppendLine($"--- {Path.GetFileName(file)} ---");
+                builder.AppendLine(File.ReadAllText(file));
+                builder.AppendLine();
+            }
+            return builder.ToString();
+        }
+        catch
+        {
+            return "Brak dostępnej pamięci narracyjnej.";
+        }
+    }
+
+    private string LoadWorld()
+    {
+        try
+        {
+            var files = Directory.GetFiles(Path.Combine("Memory", "world"), "*.md");
+            var builder = new System.Text.StringBuilder();
+            foreach (var file in files)
+            {
+                builder.AppendLine($"--- {Path.GetFileName(file)} ---");
+                builder.AppendLine(File.ReadAllText(file));
+                builder.AppendLine();
+            }
+            return builder.ToString();
+        }
+        catch
+        {
+            return "Brak dostępnego opisu świata.";
+        }
+    }
+
+    private string LoadCharacters()
+    {
+        try
+        {
+            var files = Directory.GetFiles(Path.Combine("Memory", "characters"), "*.md");
+            var builder = new System.Text.StringBuilder();
+            foreach (var file in files)
+            {
+                builder.AppendLine($"--- {Path.GetFileName(file)} ---");
+                builder.AppendLine(File.ReadAllText(file));
+                builder.AppendLine();
+            }
+            return builder.ToString();
+        }
+        catch
+        {
+            return "Brak dostępnych informacji o postaciach.";
         }
     }
 

@@ -1,6 +1,7 @@
 # Project Structure and Best Practices
 
-This document outlines the recommended folder structure and best practices for the Storier.Cli project, a .NET console application for AI-powered storytelling.
+This document outlines the recommended folder structure and best practices for the Storier.Cli### Narrative System
+The application uses a structured memory system with Markdown files to maintain story continuity. The current world is based on the STALKER universe - a post-apocalyptic Zone filled with anomalies, mutants, and artifacts. World and character information are loaded from dedicated Markdown files in the Memory folder.roject, a .NET console application for AI-powered storytelling.
 
 ## Folder Structure
 
@@ -29,17 +30,19 @@ storier/
 │   └── Storier.Cli/
 │       ├── Memory/
 │       │   ├── system-prompt.md
+│       │   ├── memory/
+│       │   │   └── README.md
+│       │   ├── missions/
+│       │   │   ├── README.md
+│       │   │   ├── dostawa-medykamentow.md
+│       │   │   └── kowalski/
+│       │   │       └── pomoc-nowicjusza.md
 │       │   ├── world/
 │       │   │   ├── README.md
 │       │   │   └── cordon.md
-│       │   ├── characters/
-│       │   │   ├── README.md
-│       │   │   └── kowalski.md
-│       │   └── missions/
+│       │   └── characters/
 │       │       ├── README.md
-│       │       ├── dostawa-medykamentow.md
-│       │       └── kowalski/
-│       │           └── pomoc-nowicjusza.md
+│       │       └── kowalski.md
 │       ├── Models/
 │       │   └── Settings.cs
 │       ├── Services/
@@ -60,16 +63,17 @@ storier/
   - **Storier.Cli/**: Main project folder
     - **Memory/**: Narrative memory files (.md) for story continuity
       - **system-prompt.md**: Base system prompt for the AI narrator
+      - **memory/**: Reserved for future general memory files
+      - **missions/**: Mission and quest information
+        - **README.md**: Mission overview
+        - ***.md**: General mission files
+        - **character/**: Character-specific missions
       - **world/**: World description and locations
         - **README.md**: Main world description
         - ***.md**: Individual location files
       - **characters/**: Character information
         - **README.md**: Character overview
         - ***.md**: Individual character files
-      - **missions/**: Mission and quest information
-        - **README.md**: Mission overview
-        - ***.md**: General mission files
-        - **character/**: Character-specific missions
     - **Models/**: Data models and configuration classes
       - **Settings.cs**: Configuration classes
     - **Services/**: Business logic services
