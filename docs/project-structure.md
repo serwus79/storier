@@ -95,6 +95,7 @@ storier/
 - Use `appsettings.{Environment}.json` for environment-specific overrides
 - Bind configuration to strongly-typed classes
 - Add sensitive files to `.gitignore`
+- **Important**: Do not allow AI to modify `appsettings.Development.json` - this file contains user-specific development settings and should be edited manually only
 
 ### 3. Dependency Injection and Services
 - Use Microsoft.Extensions.DependencyInjection for service registration
