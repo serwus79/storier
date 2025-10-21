@@ -1,4 +1,4 @@
-namespace Storier.Cli;
+namespace Storier.Cli.Models;
 
 public class AppSettings
 {

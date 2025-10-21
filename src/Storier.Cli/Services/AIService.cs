@@ -1,8 +1,9 @@
-namespace Storier.Cli;
+namespace Storier.Cli.Services;
 
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Storier.Cli.Models;
 
 public class AIService
 {

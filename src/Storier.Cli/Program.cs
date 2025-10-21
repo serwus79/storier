@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.Configuration;
-using Storier.Cli;
+using Storier.Cli.Models;
+using Storier.Cli.Services;
 
 
 var configuration = new ConfigurationBuilder()
@@ -10,7 +11,7 @@ var configuration = new ConfigurationBuilder()
 
 var settings = configuration.Get<AppSettings>() ?? throw new InvalidOperationException("Failed to load settings.");
 
-var aiService = new AIService(settings);
+var aiService = new AIService(settings!);
 
 Console.WriteLine("AI Narrator ready. Type your message:");
 
