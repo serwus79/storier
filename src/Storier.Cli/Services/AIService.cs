@@ -11,10 +11,12 @@ public class AIService
 {
     private readonly IChatCompletionService _chat;
     private readonly ChatHistory _history;
+    private readonly string _memoryPath;
 
     public AIService(IOptions<AppSettings> options)
     {
         var settings = options.Value;
+        _memoryPath = settings.MemoryPath;
         var builder = Kernel.CreateBuilder();
 
         // OpenAI
@@ -46,7 +48,7 @@ public class AIService
     {
         try
         {
-            return File.ReadAllText("Memory/system-prompt.md");
+            return File.ReadAllText(Path.Combine(_memoryPath, "system-prompt.md"));
         }
         catch
         {
@@ -58,7 +60,7 @@ public class AIService
     {
         try
         {
-            var files = Directory.GetFiles(Path.Combine("Memory", "missions"), "*.md");
+            var files = Directory.GetFiles(Path.Combine(_memoryPath, "missions"), "*.md");
             var memoryBuilder = new System.Text.StringBuilder();
             foreach (var file in files)
             {
@@ -78,7 +80,7 @@ public class AIService
     {
         try
         {
-            var files = Directory.GetFiles(Path.Combine("Memory", "missions"), "*.md");
+            var files = Directory.GetFiles(Path.Combine(_memoryPath, "missions"), "*.md");
             var builder = new System.Text.StringBuilder();
             foreach (var file in files)
             {
@@ -98,7 +100,7 @@ public class AIService
     {
         try
         {
-            var files = Directory.GetFiles(Path.Combine("Memory", "world"), "*.md");
+            var files = Directory.GetFiles(Path.Combine(_memoryPath, "world"), "*.md");
             var builder = new System.Text.StringBuilder();
             foreach (var file in files)
             {
@@ -118,7 +120,7 @@ public class AIService
     {
         try
         {
-            var files = Directory.GetFiles(Path.Combine("Memory", "characters"), "*.md");
+            var files = Directory.GetFiles(Path.Combine(_memoryPath, "characters"), "*.md");
             var builder = new System.Text.StringBuilder();
             foreach (var file in files)
             {
