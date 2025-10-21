@@ -3,18 +3,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Storier.Cli;
+
 
 var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile("appsettings.Development.json", optional: true)
-    .Build();
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile("appsettings.Development.json", optional: true)
+            .Build();
+
+var settings = configuration.Get<AppSettings>();
 
 var builder = Kernel.CreateBuilder();
 
 // OpenAI
 builder.AddOpenAIChatCompletion(
     modelId: "gpt-4o-mini",
-    apiKey: configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI API key not found in configuration.")
+    apiKey: settings?.OpenAI?.ApiKey ?? throw new InvalidOperationException("OpenAI API key not found in configuration.")
 );
 
 //Ollama
