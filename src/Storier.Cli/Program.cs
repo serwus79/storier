@@ -1,17 +1,20 @@
 ﻿
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Storier.Cli.Models;
 using Storier.Cli.Services;
 
-
 var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile("appsettings.Development.json", optional: true)
-            .Build();
+    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings.Development.json", optional: true)
+    .Build();
 
-var settings = configuration.Get<AppSettings>() ?? throw new InvalidOperationException("Failed to load settings.");
+var services = new ServiceCollection();
+services.Configure<AppSettings>(configuration);
+services.AddSingleton<AIService>();
+var serviceProvider = services.BuildServiceProvider();
 
-var aiService = new AIService(settings!);
+var aiService = serviceProvider.GetRequiredService<AIService>();
 
 Console.WriteLine("AI Narrator ready. Type your message:");
 

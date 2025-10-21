@@ -53,9 +53,10 @@ storier/
 - Add sensitive files to `.gitignore`
 
 ### 3. Dependency Injection and Services
-- Encapsulate business logic in service classes
-- Use constructor injection for dependencies
-- Keep services focused on single responsibilities
+- Use Microsoft.Extensions.DependencyInjection for service registration
+- Inject IOptions<T> for configuration in services
+- Register services with appropriate lifetimes (Singleton for shared state)
+- Resolve services through IServiceProvider
 
 ### 4. Error Handling
 - Use null-coalescing and null-conditional operators
@@ -95,6 +96,7 @@ storier/
 - .NET 9.0
 - Microsoft.SemanticKernel for AI integration
 - Microsoft.Extensions.Configuration for settings
+- Microsoft.Extensions.DependencyInjection for DI
 - Git for version control
 
 This structure provides a solid foundation for maintainable, scalable .NET console applications.
