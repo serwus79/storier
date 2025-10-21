@@ -8,3 +8,4 @@ obj/
 
 # Appsettings
 appsettings.Development.json
+src/Storier.Cli/Memory/*.md

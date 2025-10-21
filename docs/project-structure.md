@@ -11,9 +11,35 @@ storier/
 ├── README.md
 ├── Storier.sln
 ├── docs/
-│   └── project-structure.md  # This file
+│   ├── MemoryExample/
+│   │   ├── system-prompt.md
+│   │   ├── world/
+│   │   │   ├── README.md
+│   │   │   └── cordon.md
+│   │   ├── characters/
+│   │   │   ├── README.md
+│   │   │   └── kowalski.md
+│   │   └── missions/
+│   │       ├── README.md
+│   │       ├── dostawa-medykamentow.md
+│   │       └── kowalski/
+│   │           └── pomoc-nowicjusza.md
+│   └── project-structure.md
 ├── src/
 │   └── Storier.Cli/
+│       ├── Memory/
+│       │   ├── system-prompt.md
+│       │   ├── world/
+│       │   │   ├── README.md
+│       │   │   └── cordon.md
+│       │   ├── characters/
+│       │   │   ├── README.md
+│       │   │   └── kowalski.md
+│       │   └── missions/
+│       │       ├── README.md
+│       │       ├── dostawa-medykamentow.md
+│       │       └── kowalski/
+│       │           └── pomoc-nowicjusza.md
 │       ├── Models/
 │       │   └── Settings.cs
 │       ├── Services/
@@ -28,8 +54,22 @@ storier/
 
 - **.git/**: Git repository metadata
 - **docs/**: Documentation files
+  - **MemoryExample/**: Example structure for narrative memory files
+  - **project-structure.md**: Project structure and best practices
 - **src/**: Source code
   - **Storier.Cli/**: Main project folder
+    - **Memory/**: Narrative memory files (.md) for story continuity
+      - **system-prompt.md**: Base system prompt for the AI narrator
+      - **world/**: World description and locations
+        - **README.md**: Main world description
+        - ***.md**: Individual location files
+      - **characters/**: Character information
+        - **README.md**: Character overview
+        - ***.md**: Individual character files
+      - **missions/**: Mission and quest information
+        - **README.md**: Mission overview
+        - ***.md**: General mission files
+        - **character/**: Character-specific missions
     - **Models/**: Data models and configuration classes
       - **Settings.cs**: Configuration classes
     - **Services/**: Business logic services
@@ -90,6 +130,18 @@ storier/
 - Add command-line argument parsing
 - Consider dependency injection container for complex scenarios
 - Add API documentation comments
+- Expand narrative system with more memory files and dynamic world building
+
+### Narrative System
+The application uses a structured memory system with Markdown files to maintain story continuity. The current world is based on the STALKER universe - a post-apocalyptic Zone filled with anomalies, mutants, and artifacts.
+
+### System Prompt Rules
+1. Maintain world consistency and remember past events
+2. Use vivid descriptions of surroundings, senses, and emotions
+3. Create natural character dialogues
+4. Never break the fourth wall or reveal AI nature
+5. Build tension and curiosity in the story
+6. Reference narrative memory files when available
 
 ## Tools and Technologies
 
