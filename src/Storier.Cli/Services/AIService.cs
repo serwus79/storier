@@ -7,12 +7,22 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Storier.Cli.Models;
 using System.IO;
 using System.Text;
+using OpenAI;
 
 public class AIService
 {
     private readonly IChatCompletionService _chat;
     private readonly ChatHistory _history;
     private readonly string _memoryPath;
+    private int _totalPromptTokens = 0;
+    private int _totalCompletionTokens = 0;
+    private decimal _totalCost = 0;
+    private int _lastPromptTokens = 0;
+    private int _lastCompletionTokens = 0;
+    private decimal _lastCost = 0;
+
+    private const decimal InputTokenPrice = 0.15m / 1000000m; // $0.15 per 1M input tokens
+    private const decimal OutputTokenPrice = 0.60m / 1000000m; // $0.60 per 1M output tokens
 
     public AIService(IOptions<AppSettings> options)
     {
@@ -113,10 +123,28 @@ public class AIService
         return builder.ToString();
     }
 
+    public (int totalPrompt, int totalCompletion, decimal totalCost, int lastPrompt, int lastCompletion, decimal lastCost) GetUsageStats()
+    {
+        return (_totalPromptTokens, _totalCompletionTokens, _totalCost, _lastPromptTokens, _lastCompletionTokens, _lastCost);
+    }
+
     public async Task<string> SendMessage(string message)
     {
         _history.AddUserMessage(message);
         var response = await _chat.GetChatMessageContentAsync(_history);
+        if (response.Metadata != null && response.Metadata.TryGetValue("Usage", out var usageObj) && usageObj != null)
+        {
+            dynamic usage = usageObj;
+            int promptTokens = (int)usage.InputTokenCount;
+            int completionTokens = (int)usage.OutputTokenCount;
+            decimal cost = (promptTokens * InputTokenPrice) + (completionTokens * OutputTokenPrice);
+            _totalPromptTokens += promptTokens;
+            _totalCompletionTokens += completionTokens;
+            _totalCost += cost;
+            _lastPromptTokens = promptTokens;
+            _lastCompletionTokens = completionTokens;
+            _lastCost = cost;
+        }
         if (!string.IsNullOrWhiteSpace(response.Content))
         {
             _history.AddAssistantMessage(response.Content);

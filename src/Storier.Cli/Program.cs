@@ -26,4 +26,8 @@ while (true)
 
     var response = await aiService.SendMessage(input);
     Console.WriteLine(response);
+    var (totalPrompt, totalCompletion, totalCost, lastPrompt, lastCompletion, lastCost) = aiService.GetUsageStats();
+    Console.WriteLine("-----------------------------------");
+    Console.WriteLine($"Last: {lastPrompt} prompt + {lastCompletion} completion tokens, ${lastCost:F4}");
+    Console.WriteLine($"Total: {totalPrompt} prompt + {totalCompletion} completion tokens, ${totalCost:F4}");
 }
