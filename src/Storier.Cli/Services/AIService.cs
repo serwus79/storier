@@ -20,14 +20,16 @@ public class AIService
     private int _lastPromptTokens = 0;
     private int _lastCompletionTokens = 0;
     private decimal _lastCost = 0;
-
-    private const decimal InputTokenPrice = 0.15m / 1000000m; // $0.15 per 1M input tokens
-    private const decimal OutputTokenPrice = 0.60m / 1000000m; // $0.60 per 1M output tokens
+    private readonly decimal _inputTokenPrice;
+    private readonly decimal _outputTokenPrice;
 
     public AIService(IOptions<AppSettings> options)
     {
         var settings = options.Value;
         _memoryPath = settings.MemoryPath;
+        var (inputPrice, _, outputPrice) = ModelPricing.GetPrices(settings.ModelId);
+        _inputTokenPrice = inputPrice / 1000000m;
+        _outputTokenPrice = outputPrice / 1000000m;
         var builder = Kernel.CreateBuilder();
 
         // OpenAI
@@ -137,7 +139,7 @@ public class AIService
             dynamic usage = usageObj;
             int promptTokens = (int)usage.InputTokenCount;
             int completionTokens = (int)usage.OutputTokenCount;
-            decimal cost = (promptTokens * InputTokenPrice) + (completionTokens * OutputTokenPrice);
+            decimal cost = (promptTokens * _inputTokenPrice) + (completionTokens * _outputTokenPrice);
             _totalPromptTokens += promptTokens;
             _totalCompletionTokens += completionTokens;
             _totalCost += cost;
