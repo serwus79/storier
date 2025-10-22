@@ -6,6 +6,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Storier.Cli.Models;
 using System.IO;
+using System.Text;
 
 public class AIService
 {
@@ -37,11 +38,31 @@ public class AIService
         string memory = LoadMemoryFromFiles();
         string world = LoadWorld();
         string characters = LoadCharacters();
+        string player = LoadPlayer();
         string missions = LoadMissionsFromFiles();
 
-        string systemPrompt = $"{systemPromptBase}\n\n### Pamięć\n{memory}\n\n### Świat\n{world}\n\n### Postacie\n{characters}\n\n### Misje\n{missions}";
+        string systemPrompt = $"{systemPromptBase}\n\n### Pamięć\n{memory}\n\n### Świat\n{world}\n\n### Postacie\n{characters}\n\n### Gracz\n{player}\n\n### Misje\n{missions}";
 
         _history.AddSystemMessage(systemPrompt);
+    }
+
+    private void LoadFilesFromFolder(StringBuilder builder, string folderName, string context = "")
+    {
+        try
+        {
+            var files = Directory.GetFiles(Path.Combine(_memoryPath, folderName), "*.md");
+            foreach (var file in files)
+            {
+                string prefix = string.IsNullOrEmpty(context) ? "" : $"{context}: ";
+                builder.AppendLine($"--- {prefix}{Path.GetFileName(file)} ---");
+                builder.AppendLine(File.ReadAllText(file));
+                builder.AppendLine();
+            }
+        }
+        catch
+        {
+            // Log error if needed
+        }
     }
 
     private string LoadSystemPrompt()
@@ -58,82 +79,38 @@ public class AIService
 
     private string LoadMemoryFromFiles()
     {
-        try
-        {
-            var files = Directory.GetFiles(Path.Combine(_memoryPath, "missions"), "*.md");
-            var memoryBuilder = new System.Text.StringBuilder();
-            foreach (var file in files)
-            {
-                memoryBuilder.AppendLine($"--- {Path.GetFileName(file)} ---");
-                memoryBuilder.AppendLine(File.ReadAllText(file));
-                memoryBuilder.AppendLine();
-            }
-            return memoryBuilder.ToString();
-        }
-        catch
-        {
-            return "Brak dostępnej pamięci narracyjnej.";
-        }
+        var builder = new System.Text.StringBuilder();
+        LoadFilesFromFolder(builder, "memory");
+        return builder.ToString();
     }
 
     private string LoadMissionsFromFiles()
     {
-        try
-        {
-            var files = Directory.GetFiles(Path.Combine(_memoryPath, "missions"), "*.md");
-            var builder = new System.Text.StringBuilder();
-            foreach (var file in files)
-            {
-                builder.AppendLine($"--- {Path.GetFileName(file)} ---");
-                builder.AppendLine(File.ReadAllText(file));
-                builder.AppendLine();
-            }
-            return builder.ToString();
-        }
-        catch
-        {
-            return "Brak dostępnej pamięci narracyjnej.";
-        }
+        var builder = new System.Text.StringBuilder();
+        LoadFilesFromFolder(builder, "missions");
+        return builder.ToString();
     }
 
     private string LoadWorld()
     {
-        try
-        {
-            var files = Directory.GetFiles(Path.Combine(_memoryPath, "world"), "*.md");
-            var builder = new System.Text.StringBuilder();
-            foreach (var file in files)
-            {
-                builder.AppendLine($"--- {Path.GetFileName(file)} ---");
-                builder.AppendLine(File.ReadAllText(file));
-                builder.AppendLine();
-            }
-            return builder.ToString();
-        }
-        catch
-        {
-            return "Brak dostępnego opisu świata.";
-        }
+        var builder = new System.Text.StringBuilder();
+        LoadFilesFromFolder(builder, "world");
+        return builder.ToString();
     }
 
     private string LoadCharacters()
     {
-        try
-        {
-            var files = Directory.GetFiles(Path.Combine(_memoryPath, "characters"), "*.md");
-            var builder = new System.Text.StringBuilder();
-            foreach (var file in files)
-            {
-                builder.AppendLine($"--- {Path.GetFileName(file)} ---");
-                builder.AppendLine(File.ReadAllText(file));
-                builder.AppendLine();
-            }
-            return builder.ToString();
-        }
-        catch
-        {
-            return "Brak dostępnych informacji o postaciach.";
-        }
+        var builder = new System.Text.StringBuilder();
+        LoadFilesFromFolder(builder, "characters");
+        LoadFilesFromFolder(builder, Path.Combine("characters", "padre"), "Player");
+        return builder.ToString();
+    }
+
+    private string LoadPlayer()
+    {
+        var builder = new System.Text.StringBuilder();
+        LoadFilesFromFolder(builder, "player", "Player");
+        return builder.ToString();
     }
 
     public async Task<string> SendMessage(string message)
